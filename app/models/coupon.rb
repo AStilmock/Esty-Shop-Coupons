@@ -4,5 +4,5 @@ class Coupon < ApplicationRecord
                         :code
   belongs_to :merchant
   has_many :invoices
-  enum status: [:enabled, :disabled]
+  enum status: [:deactivated, :activated]
 end
