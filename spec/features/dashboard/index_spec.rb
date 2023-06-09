@@ -18,6 +18,7 @@ RSpec.describe "merchant dashboard" do
     @invoice_5 = Invoice.create!(customer_id: @customer_4.id, status: 2)
     @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
     @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 1)
+    
 
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id)
     @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
@@ -39,6 +40,13 @@ RSpec.describe "merchant dashboard" do
     @transaction5 = Transaction.create!(credit_card_number: 102938, result: 1, invoice_id: @invoice_6.id)
     @transaction6 = Transaction.create!(credit_card_number: 879799, result: 1, invoice_id: @invoice_7.id)
     @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_2.id)
+
+    @coupon1 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF", merchant_id: @merchant1.id)
+    @coupon2 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF-HOLIDAY", merchant_id: @merchant1.id)
+    @coupon3 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF-LOYALTY", merchant_id: @merchant1.id)
+    @coupon4 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF-WEEKEND", merchant_id: @merchant1.id)
+    @coupon5 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF-FRIENDS", merchant_id: @merchant1.id)
+    @coupon6 = Coupon.create!(name: "10% OFF Discount", status: 0, code: "10-OFF-FAMILY", merchant_id: @merchant1.id)
 
     visit merchant_dashboard_index_path(@merchant1)
   end
@@ -118,5 +126,23 @@ RSpec.describe "merchant dashboard" do
 
   it "shows the date that the invoice was created in this format: Monday, July 18, 2019" do
     expect(page).to have_content(@invoice_1.created_at.strftime("%A, %B %-d, %Y"))
+  end
+
+  it "can check view all the coupons from merchant dashboard" do
+    # 1. Merchant Coupons Index 
+
+    # As a merchant
+    # When I visit my merchant dashboard page
+    # I see a link to view all of my coupons
+    # When I click this link
+    # I'm taken to my coupons index page
+    # Where I see all of my coupon names including their amount off 
+    # And each coupon's name is also a link to its show page.
+
+    within "#coupons" do
+      expect(page).to have_link "View All Coupons"
+      click_link "View All Coupons"
+      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons")
+    end
   end
 end
