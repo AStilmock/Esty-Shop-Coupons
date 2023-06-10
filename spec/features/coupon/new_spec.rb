@@ -47,26 +47,12 @@ RSpec.describe "Coupon New" do
     @coupon4 = Coupon.create!(name: "10% OFF Discount WEEKEND", status: 1, code: "10-OFF-WEEKEND", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
     @coupon5 = Coupon.create!(name: "10% OFF Discount FRIENDS", status: 1, code: "10-OFF-FRIENDS", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
     @coupon6 = Coupon.create!(name: "10% OFF Discount FAMILY", status: 0, code: "10-OFF-FAMILY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-    @coupon7 = Coupon.create!(name: "BOGO $10 OFF", status: 0, code: "BOGO$10", amount: 10, disc_type: 0, merchant_id: @merchant1.id)
+    @coupon7 = Coupon.create!(name: "BOGO $10 OFF", status: 0, code: "BOGO$10", amount: 10.0, disc_type: 0, merchant_id: @merchant1.id)
   end
   describe "Merchant Coupon New Page" do
     it "has form to create new coupon" do
       # 2. Merchant Coupon Create 
 
-      # As a merchant
-      # When I visit my coupon index page 
-      # I see a link to create a new coupon.
-      # When I click that link 
-      # I am taken to a new page where I see a form to add a new coupon.
-      # When I fill in that form with a name, unique code, an amount, and whether that amount is a percent or a dollar amount
-      # And click the Submit button
-      # I'm taken back to the coupon index page 
-      # And I can see my new coupon listed.
-
-
-      # * Sad Paths to consider: 
-      # 1. This Merchant already has 5 active coupons
-      # 2. Coupon code entered is NOT unique
       visit "/merchants/#{@merchant1.id}/coupons/new"
       expect(page).to have_field("Name")
       expect(page).to have_field("Code")
@@ -80,11 +66,12 @@ RSpec.describe "Coupon New" do
       click_button "Submit"
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/new")
       expect(page).to have_content("ERROR - VALID DATA MUST BE ENTERED FOR COUPON CREATION")
-      
+
       fill_in "Name", with: "BOGO $10 OFF"
       fill_in "Code", with: "BOGO$10"
-      fill_in "Amount", with: 10
+      fill_in "Amount", with: 10.0
       fill_in "Disc type", with: "dollar"
+      fill_in "Status", with: "deactivated"
       click_button "Submit"
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons")
 
@@ -92,6 +79,8 @@ RSpec.describe "Coupon New" do
         expect(page).to have_content("Coupon Name: #{@coupon7.name}")
         expect(page).to have_content("Coupon Code: #{@coupon7.code}")
       end
+
+      expect(page).to have_content("Deactivated Coupon Successfully Created")
     end
   end
 end
