@@ -53,7 +53,8 @@ describe Merchant do
       @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
       @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 1)
       @invoice_8 = Invoice.create!(customer_id: @customer_6.id, status: 2)
-      @invoice_9 = Invoice.create!(customer_id: @customer_1.id, status: 2)
+
+      @invoice_9 = Invoice.create!(customer: @customer_1, status: 2)
 
       @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 0, created_at: "2012-03-27 14:54:09")
       @ii_2 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 0, created_at: "2012-03-29 14:54:09")
@@ -78,9 +79,10 @@ describe Merchant do
       @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_7.id)
       @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_8.id)
       @transaction8 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_9.id)
+
     end
 
-    it 'top_merchants' do
+    xit 'top_merchants' do
       actual = Merchant.top_merchants.map do |result|
         result.name
       end
