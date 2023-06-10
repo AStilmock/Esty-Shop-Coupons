@@ -2,12 +2,12 @@
 
 <div id="coupons">
   <h3>Activated Coupons</h3>
-  <% @merchant.coupons.activated_coupons.each do |coupon| %>
+  <% @merchant.activated_coupons.each do |coupon| %>
     <p>Coupon Name: <%= link_to coupon.name, "/merchants/#{@merchant.id}/coupons/#{coupon.id}" %></p>
     <p>Coupon Code: <%= coupon.code %></p>
   <% end %>
   <h3>Deactivated Coupons</h3>
-  <% @merchant.coupons.deactivated_coupons.each do |coupon| %>
+  <% @merchant.deactivated_coupons.each do |coupon| %>
     <p>Coupon Name: <%= link_to coupon.name, "/merchants/#{@merchant.id}/coupons/#{coupon.id}" %></p>
     <p>Coupon Code: <%= coupon.code %></p>
   <% end %>
