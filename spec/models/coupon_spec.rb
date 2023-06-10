@@ -5,6 +5,9 @@ RSpec.describe Coupon, type: :model do
     it { should validate_presence_of :name }
     it { should validate_presence_of :status }
     it { should validate_presence_of :code }
+    it { should validate_presence_of :amount }
+    it { should validate_numericality_of :amount }
+    it { should validate_presence_of :disc_type }
   end
   describe "relationships" do
     it { should belong_to(:merchant) }

@@ -1,8 +1,16 @@
-<h1> @merchant.name Coupons </h1>
+<h1> <%= @merchant.name %> Coupons </h1>
 
 <div id="coupons">
-  <% @merchant.coupons.each do |coupon| %>
-    <p>Coupon Name: <%= link_to coupon.name, "/merchants/#{@merchant.id}/coupons/#{coupon.id}" %><p>
-    <p>Coupon Code: <%= coupon.code %><p>
+  <h3>Activated Coupons</h3>
+  <% @merchant.coupons.activated_coupons.each do |coupon| %>
+    <p>Coupon Name: <%= link_to coupon.name, "/merchants/#{@merchant.id}/coupons/#{coupon.id}" %></p>
+    <p>Coupon Code: <%= coupon.code %></p>
   <% end %>
+  <h3>Deactivated Coupons</h3>
+  <% @merchant.coupons.deactivated_coupons.each do |coupon| %>
+    <p>Coupon Name: <%= link_to coupon.name, "/merchants/#{@merchant.id}/coupons/#{coupon.id}" %></p>
+    <p>Coupon Code: <%= coupon.code %></p>
+  <% end %>
+
+  <p> <%= link_to "Create New Coupon", "/merchants/#{@merchant.id}/coupons/new" %> </p>
 </div>
