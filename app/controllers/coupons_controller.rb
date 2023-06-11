@@ -4,6 +4,7 @@ class CouponsController < ApplicationController
   end
 
   def show
+    @merchant = Merchant.find(params[:merchant_id])
     @coupon = Coupon.find(params[:id])
   end
 
@@ -29,6 +30,18 @@ class CouponsController < ApplicationController
       redirect_to "/merchants/#{@merchant.id}/coupons/new"
       flash[:alert] = "ERROR - VALID DATA MUST BE ENTERED FOR COUPON CREATION"
     end
+  end
+
+  def update
+    @merchant = Merchant.find(params[:merchant_id])
+    @coupon = Coupon.find(params[:id])
+    if @coupon.status == "activated"
+      @coupon.update(status: 0)
+    elsif @coupon.status == "deactivated"
+      @coupon.update(status: 1)
+    end
+    redirect_to "/merchants/#{@merchant.id}/coupons/#{@coupon.id}"
+    flash[:notice] = "Coupon Status Successfully Updated"
   end
 
   private
