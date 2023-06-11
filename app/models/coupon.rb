@@ -9,4 +9,9 @@ class Coupon < ApplicationRecord
   has_many :invoices
   enum status: [:deactivated, :activated]
   enum disc_type: [:dollar, :percent]
+
+  def use_count
+    invoices.joins(:transactions)
+    .where(transactions: { result: 1 }).count
+  end
 end

@@ -1,6 +1,6 @@
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe Coupon, type: :model do
+RSpec.describe "Coupon Show Page" do
   before :each do
     @merchant1 = Merchant.create!(name: "Hair Care")
 
@@ -50,22 +50,21 @@ RSpec.describe Coupon, type: :model do
     @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_2.id)
 
   end
-  describe "validations" do
-    it { should validate_presence_of :name }
-    it { should validate_presence_of :status }
-    it { should validate_presence_of :code }
-    it { should validate_presence_of :amount }
-    it { should validate_numericality_of :amount }
-    it { should validate_presence_of :disc_type }
-  end
-  describe "relationships" do
-    it { should belong_to(:merchant) }
-    it { should have_many(:invoices) }
-  end
 
-  describe "methods" do
-    it "coupon use_count method" do
-      expect(@coupon1.use_count).to eq(7)
+  describe "Merchant Coupon Show Page" do
+    it "shows merchant coupons with status and count" do
+      # 3. Merchant Coupon Show Page 
+      visit "/merchants/#{@merchant1.id}/coupons/#{@coupon1.id}"
+      expect(page).to have_content("#{@coupon1.name}")
+
+      within "#coupon-info" do
+        expect(page).to have_content("Coupon Code: #{@coupon1.code}")
+        expect(page).to have_content("Coupon Value: #{@coupon1.amount}")
+        expect(page).to have_content("Coupon Status: #{@coupon1.status}")
+        expect(page).to have_content("Coupon Used #{@coupon1.use_count} Times")
+        expect(@coupon1.use_count).to eq(7)
+      end
+      save_and_open_page
     end
   end
 end
