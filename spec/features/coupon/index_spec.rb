@@ -4,6 +4,14 @@ RSpec.describe "Coupon Dashboard" do
   before :each do
     @merchant1 = Merchant.create!(name: "Hair Care")
 
+    @coupon1 = Coupon.create!(name: "10% OFF Discount-STANDARD", status: 1, code: "10-OFF-STAN", amount: 10, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon2 = Coupon.create!(name: "10% OFF Discount-HOLIDAY", status: 1, code: "10-OFF-HOLIDAY", amount: 10, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon3 = Coupon.create!(name: "10% OFF Discount-LOYALTY", status: 1, code: "10-OFF-LOYALTY", amount: 10, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon4 = Coupon.create!(name: "10% OFF Discount-WEEKEND", status: 1, code: "10-OFF-WEEKEND", amount: 10, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon5 = Coupon.create!(name: "10% OFF Discount-FRIENDS", status: 1, code: "10-OFF-FRIENDS", amount: 10, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon6 = Coupon.create!(name: "10% OFF Discount-FAMILY", status: 0, code: "10-OFF-FAMILY", amount: 10, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon7 = Coupon.create!(name: "BOGO $10 OFF", status: 0, code: "BOGO$10", amount: 10, disc_type: 0, merchant_id: @merchant1.id)
+
     @customer_1 = Customer.create!(first_name: "Joey", last_name: "Smith")
     @customer_2 = Customer.create!(first_name: "Cecilia", last_name: "Jones")
     @customer_3 = Customer.create!(first_name: "Mariah", last_name: "Carrey")
@@ -11,13 +19,13 @@ RSpec.describe "Coupon Dashboard" do
     @customer_5 = Customer.create!(first_name: "Sylvester", last_name: "Nader")
     @customer_6 = Customer.create!(first_name: "Herber", last_name: "Kuhn")
 
-    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2)
-    @invoice_2 = Invoice.create!(customer_id: @customer_1.id, status: 2)
-    @invoice_3 = Invoice.create!(customer_id: @customer_2.id, status: 2)
-    @invoice_4 = Invoice.create!(customer_id: @customer_3.id, status: 2)
-    @invoice_5 = Invoice.create!(customer_id: @customer_4.id, status: 2)
-    @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
-    @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 1)
+    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, coupon_id: @coupon1.id)
+    @invoice_2 = Invoice.create!(customer_id: @customer_1.id, status: 2, coupon_id: @coupon1.id)
+    @invoice_3 = Invoice.create!(customer_id: @customer_2.id, status: 2, coupon_id: @coupon1.id)
+    @invoice_4 = Invoice.create!(customer_id: @customer_3.id, status: 2, coupon_id: @coupon1.id)
+    @invoice_5 = Invoice.create!(customer_id: @customer_4.id, status: 2, coupon_id: @coupon1.id)
+    @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2, coupon_id: @coupon1.id)
+    @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 1, coupon_id: @coupon1.id)
     
 
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id)
@@ -40,22 +48,14 @@ RSpec.describe "Coupon Dashboard" do
     @transaction5 = Transaction.create!(credit_card_number: 102938, result: 1, invoice_id: @invoice_6.id)
     @transaction6 = Transaction.create!(credit_card_number: 879799, result: 1, invoice_id: @invoice_7.id)
     @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_2.id)
-
-    @coupon1 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-    @coupon2 = Coupon.create!(name: "10% OFF Discount HOLIDAY", status: 1, code: "10-OFF-HOLIDAY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-    @coupon3 = Coupon.create!(name: "10% OFF Discount LOYALTY", status: 1, code: "10-OFF-LOYALTY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-    @coupon4 = Coupon.create!(name: "10% OFF Discount WEEKEND", status: 1, code: "10-OFF-WEEKEND", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-    @coupon5 = Coupon.create!(name: "10% OFF Discount FRIENDS", status: 1, code: "10-OFF-FRIENDS", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-    @coupon6 = Coupon.create!(name: "10% OFF Discount FAMILY", status: 0, code: "10-OFF-FAMILY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-    @coupon7 = Coupon.create!(name: "BOGO $10 OFF", status: 0, code: "BOGO$10", amount: 10, disc_type: 0, merchant_id: @merchant1.id)
   end
+
   describe "Coupon Index Page" do
-    
     it "can check view all the coupons from merchant dashboard" do
     # 1. Merchant Coupons Index 
     visit "/merchants/#{@merchant1.id}/coupons"
 
-      within "#coupons" do
+      within "#active-coupons" do
         expect(page).to have_link("#{@coupon1.name}")
         expect(page).to have_content("Coupon Code: #{@coupon1.code}")
         
@@ -80,10 +80,41 @@ RSpec.describe "Coupon Dashboard" do
       # 2. Merchant Coupon Create 
       visit "/merchants/#{@merchant1.id}/coupons"
 
-      within "#coupons" do
-        expect(page).to have_link("Create New Coupon")
-        click_link "Create New Coupon"
-        expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/new")
+      expect(page).to have_link("Create New Coupon")
+      click_link "Create New Coupon"
+      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/new")
+    end
+
+    it "merchant coupon index sorted" do
+      # 6. Merchant Coupon Index Sorted
+      visit "/merchants/#{@merchant1.id}/coupons"
+
+      within "#active-coupons" do
+        expect(page).to have_content("Activated Coupons")
+        expect(page).to_not have_content("Deactivated Coupons")
+
+        expect(page).to have_content(@coupon1.name)
+        expect(page).to have_content(@coupon2.name)
+        expect(page).to have_content(@coupon3.name)
+        expect(page).to have_content(@coupon4.name)
+        expect(page).to have_content(@coupon5.name)
+
+        expect(page).to_not have_content(@coupon6.name)
+        expect(page).to_not have_content(@coupon7.name)
+      end
+      
+      within "#deactive-coupons" do
+        expect(page).to have_content("Deactivated Coupons")
+        expect(page).to_not have_content("Activated Coupons")
+
+        expect(page).to have_content(@coupon6.name)
+        expect(page).to have_content(@coupon7.name)
+
+        expect(page).to_not have_content(@coupon1.name)
+        expect(page).to_not have_content(@coupon2.name)
+        expect(page).to_not have_content(@coupon3.name)
+        expect(page).to_not have_content(@coupon4.name)
+        expect(page).to_not have_content(@coupon5.name)
       end
     end
   end
