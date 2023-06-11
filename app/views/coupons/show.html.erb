@@ -1,1 +1,12 @@
-<h1> @coupon.name </h1>
+<h1> <%= @coupon.name %> </h1>
+
+<div id="coupon-info">
+  <p> Coupon Code: <%= @coupon.code %> </p>
+  <% if @coupon.disc_type = 1%>
+    <p>Coupon Value: <%= @coupon.amount %>% Off </p>
+  <% else %>
+    <p>Coupon Value: <%= @coupon.amount %> Dollars Off </p>
+  <% end %>
+  <p> Coupon Status: <%= @coupon.status %> </p>
+  <p> Coupon Used <%= @coupon.use_count %> Times </p>
+</div>
