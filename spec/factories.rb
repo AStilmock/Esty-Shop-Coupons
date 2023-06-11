@@ -34,4 +34,12 @@ FactoryBot.define do
     merchant
     invoice
   end
+
+  factory :coupon do
+    name
+    status {[0,1].sample}
+    code
+    amount
+    disc_type {[0,1].sample}
+  end
 end

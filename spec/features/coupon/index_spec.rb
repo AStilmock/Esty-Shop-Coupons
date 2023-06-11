@@ -41,12 +41,13 @@ RSpec.describe "Coupon Dashboard" do
     @transaction6 = Transaction.create!(credit_card_number: 879799, result: 1, invoice_id: @invoice_7.id)
     @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_2.id)
 
-    @coupon1 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF", merchant_id: @merchant1.id)
-    @coupon2 = Coupon.create!(name: "10% OFF Discount HOLIDAY", status: 1, code: "10-OFF-HOLIDAY", merchant_id: @merchant1.id)
-    @coupon3 = Coupon.create!(name: "10% OFF Discount LOYALTY", status: 1, code: "10-OFF-LOYALTY", merchant_id: @merchant1.id)
-    @coupon4 = Coupon.create!(name: "10% OFF Discount WEEKEND", status: 1, code: "10-OFF-WEEKEND", merchant_id: @merchant1.id)
-    @coupon5 = Coupon.create!(name: "10% OFF Discount FRIENDS", status: 1, code: "10-OFF-FRIENDS", merchant_id: @merchant1.id)
-    @coupon6 = Coupon.create!(name: "10% OFF Discount FAMILY", status: 0, code: "10-OFF-FAMILY", merchant_id: @merchant1.id)
+    @coupon1 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon2 = Coupon.create!(name: "10% OFF Discount HOLIDAY", status: 1, code: "10-OFF-HOLIDAY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon3 = Coupon.create!(name: "10% OFF Discount LOYALTY", status: 1, code: "10-OFF-LOYALTY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon4 = Coupon.create!(name: "10% OFF Discount WEEKEND", status: 1, code: "10-OFF-WEEKEND", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon5 = Coupon.create!(name: "10% OFF Discount FRIENDS", status: 1, code: "10-OFF-FRIENDS", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon6 = Coupon.create!(name: "10% OFF Discount FAMILY", status: 0, code: "10-OFF-FAMILY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+    @coupon7 = Coupon.create!(name: "BOGO $10 OFF", status: 0, code: "BOGO$10", amount: 10, disc_type: 0, merchant_id: @merchant1.id)
   end
   describe "Coupon Index Page" do
     
@@ -72,6 +73,17 @@ RSpec.describe "Coupon Dashboard" do
             
         click_link "#{@coupon1.name}"
         expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/#{@coupon1.id}")
+      end
+    end
+
+    it "merchant coupon create" do
+      # 2. Merchant Coupon Create 
+      visit "/merchants/#{@merchant1.id}/coupons"
+
+      within "#coupons" do
+        expect(page).to have_link("Create New Coupon")
+        click_link "Create New Coupon"
+        expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/new")
       end
     end
   end

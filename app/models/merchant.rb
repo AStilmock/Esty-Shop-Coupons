@@ -1,11 +1,11 @@
 class Merchant < ApplicationRecord
   validates_presence_of :name
   has_many :items
+  has_many :coupons
   has_many :invoice_items, through: :items
   has_many :invoices, through: :invoice_items
   has_many :customers, through: :invoices
   has_many :transactions, through: :invoices
-  has_many :coupons
 
   enum status: [:enabled, :disabled]
 
@@ -35,7 +35,7 @@ class Merchant < ApplicationRecord
     .group(:id)
     .order('total_revenue desc')
     .limit(5)
-  end
+   end
 
   def self.top_merchants
     joins(invoices: [:invoice_items, :transactions])
@@ -61,5 +61,17 @@ class Merchant < ApplicationRecord
 
   def disabled_items
     items.where(status: 0)
+  end
+
+  def coupon_limit_5
+    self.activated_coupons.count < 5
+  end
+
+  def activated_coupons
+    self.coupons.where(status: "activated")
+  end
+  
+  def deactivated_coupons
+    self.coupons.where(status: "deactivated")
   end
 end

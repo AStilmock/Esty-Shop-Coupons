@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "merchant dashboard" do
+RSpec.describe "Coupon New" do
   before :each do
     @merchant1 = Merchant.create!(name: "Hair Care")
 
@@ -18,6 +18,7 @@ RSpec.describe "merchant dashboard" do
     @invoice_5 = Invoice.create!(customer_id: @customer_4.id, status: 2)
     @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
     @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 1)
+    
 
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id)
     @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
@@ -40,109 +41,46 @@ RSpec.describe "merchant dashboard" do
     @transaction6 = Transaction.create!(credit_card_number: 879799, result: 1, invoice_id: @invoice_7.id)
     @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_2.id)
 
-
     @coupon1 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
     @coupon2 = Coupon.create!(name: "10% OFF Discount HOLIDAY", status: 1, code: "10-OFF-HOLIDAY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
     @coupon3 = Coupon.create!(name: "10% OFF Discount LOYALTY", status: 1, code: "10-OFF-LOYALTY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
     @coupon4 = Coupon.create!(name: "10% OFF Discount WEEKEND", status: 1, code: "10-OFF-WEEKEND", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
     @coupon5 = Coupon.create!(name: "10% OFF Discount FRIENDS", status: 1, code: "10-OFF-FRIENDS", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
     @coupon6 = Coupon.create!(name: "10% OFF Discount FAMILY", status: 0, code: "10-OFF-FAMILY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-
-    visit merchant_dashboard_index_path(@merchant1)
+    @coupon7 = Coupon.create!(name: "BOGO $10 OFF", status: 0, code: "BOGO$10", amount: 10.0, disc_type: 0, merchant_id: @merchant1.id)
   end
+  describe "Merchant Coupon New Page" do
+    it "has form to create new coupon" do
+      # 2. Merchant Coupon Create 
 
-  it "shows the merchant name" do
-    expect(page).to have_content(@merchant1.name)
-  end
+      visit "/merchants/#{@merchant1.id}/coupons/new"
+      expect(page).to have_field("Name")
+      expect(page).to have_field("Code")
+      expect(page).to have_field("Amount")
+      expect(page).to have_field("Disc type")
 
-  it "can see a link to my merchant items index" do
-    expect(page).to have_link("Items")
+      fill_in "Name", with: "BOGO $10 OFF"
+      fill_in "Code", with: "BOGO$10"
+      fill_in "Amount", with: "not_a_number"
+      fill_in "Disc type", with: "dollar"
+      click_button "Submit"
+      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/new")
+      expect(page).to have_content("ERROR - VALID DATA MUST BE ENTERED FOR COUPON CREATION")
 
-    click_link "Items"
-
-    expect(current_path).to eq("/merchants/#{@merchant1.id}/items")
-  end
-
-  it "can see a link to my merchant invoices index" do
-    expect(page).to have_link("Invoices")
-
-    click_link "Invoices"
-
-    expect(current_path).to eq("/merchants/#{@merchant1.id}/invoices")
-  end
-
-  it "shows the names of the top 5 customers with successful transactions" do
-    within("#customer-#{@customer_1.id}") do
-      expect(page).to have_content(@customer_1.first_name)
-      expect(page).to have_content(@customer_1.last_name)
-
-      expect(page).to have_content(3)
-    end
-    within("#customer-#{@customer_2.id}") do
-      expect(page).to have_content(@customer_2.first_name)
-      expect(page).to have_content(@customer_2.last_name)
-      expect(page).to have_content(1)
-    end
-    within("#customer-#{@customer_3.id}") do
-      expect(page).to have_content(@customer_3.first_name)
-      expect(page).to have_content(@customer_3.last_name)
-      expect(page).to have_content(1)
-    end
-    within("#customer-#{@customer_4.id}") do
-      expect(page).to have_content(@customer_4.first_name)
-      expect(page).to have_content(@customer_4.last_name)
-      expect(page).to have_content(1)
-    end
-    within("#customer-#{@customer_5.id}") do
-      expect(page).to have_content(@customer_5.first_name)
-      expect(page).to have_content(@customer_5.last_name)
-      expect(page).to have_content(1)
-    end
-    expect(page).to have_no_content(@customer_6.first_name)
-    expect(page).to have_no_content(@customer_6.last_name)
-  end
-  it "can see a section for Items Ready to Ship with list of names of items ordered and ids" do
-    within("#items_ready_to_ship") do
-
-      expect(page).to have_content(@item_1.name)
-      expect(page).to have_content(@item_1.invoice_ids)
-
-      expect(page).to have_content(@item_2.name)
-      expect(page).to have_content(@item_2.invoice_ids)
-
-      expect(page).to have_no_content(@item_3.name)
-      expect(page).to have_no_content(@item_3.invoice_ids)
-    end
-  end
-
-  it "each invoice id is a link to my merchant's invoice show page " do
-    expect(page).to have_link(@item_1.invoice_ids)
-    expect(page).to have_link(@item_2.invoice_ids)
-    expect(page).to_not have_link(@item_3.invoice_ids)
-
-    click_link("#{@item_1.invoice_ids}", match: :first)
-    expect(current_path).to eq("/merchants/#{@merchant1.id}/invoices/#{@invoice_1.id}")
-  end
-
-  it "shows the date that the invoice was created in this format: Monday, July 18, 2019" do
-    expect(page).to have_content(@invoice_1.created_at.strftime("%A, %B %-d, %Y"))
-  end
-
-  it "can check view all the coupons from merchant dashboard" do
-    # 1. Merchant Coupons Index 
-
-    # As a merchant
-    # When I visit my merchant dashboard page
-    # I see a link to view all of my coupons
-    # When I click this link
-    # I'm taken to my coupons index page
-    # Where I see all of my coupon names including their amount off 
-    # And each coupon's name is also a link to its show page.
-
-    within "#coupons" do
-      expect(page).to have_link "View All Coupons"
-      click_link "View All Coupons"
+      fill_in "Name", with: "BOGO $10 OFF"
+      fill_in "Code", with: "BOGO$10"
+      fill_in "Amount", with: 10.0
+      fill_in "Disc type", with: "dollar"
+      fill_in "Status", with: "deactivated"
+      click_button "Submit"
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons")
+
+      within "#coupons" do
+        expect(page).to have_content("Coupon Name: #{@coupon7.name}")
+        expect(page).to have_content("Coupon Code: #{@coupon7.code}")
+      end
+
+      expect(page).to have_content("Deactivated Coupon Successfully Created")
     end
   end
 end
