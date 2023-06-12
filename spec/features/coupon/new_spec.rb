@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "Coupon New" do
   before :each do
     @merchant1 = Merchant.create!(name: "Hair Care")
+    @merchant2 = Merchant.create!(name: "Tommy's Tupees")
 
     @coupon1 = Coupon.create!(name: "10% OFF Discount-STANDARD", status: 1, code: "10-OFF-STAN", amount: 10, disc_type: 1, merchant_id: @merchant1.id)
     @coupon2 = Coupon.create!(name: "10% OFF Discount-HOLIDAY", status: 1, code: "10-OFF-HOLIDAY", amount: 10, disc_type: 1, merchant_id: @merchant1.id)
@@ -26,7 +27,6 @@ RSpec.describe "Coupon New" do
     @invoice_5 = Invoice.create!(customer_id: @customer_4.id, status: 2, coupon_id: @coupon1.id)
     @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2, coupon_id: @coupon1.id)
     @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 1, coupon_id: @coupon1.id)
-    
 
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id)
     @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
@@ -59,28 +59,51 @@ RSpec.describe "Coupon New" do
       expect(page).to have_field("Amount")
       expect(page).to have_field("Disc type")
 
-      fill_in "Name", with: "#{@coupon1.name}"
-      fill_in "Code", with: "#{@coupon1.code}"
+      fill_in "Name", with: "BOGO$10OFF-STANDARD"
+      fill_in "Code", with: "BOGO$10-STAN"
       fill_in "Amount", with: "not_a_number"
-      fill_in "Disc type", with: "#{@coupon1.disc_type}"
+      fill_in "Disc type", with: "dollar"
       click_button "Submit"
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/new")
       expect(page).to have_content("ERROR - VALID DATA MUST BE ENTERED FOR COUPON CREATION")
 
-      fill_in "Name", with: "#{@coupon1.name}"
-      fill_in "Code", with: "#{@coupon1.code}"
-      fill_in "Amount", with: "#{@coupon1.amount}"
-      fill_in "Disc type", with: "#{@coupon1.disc_type}"
-      fill_in "Status", with: "#{@coupon1.status}"
+      fill_in "Name", with: "BOGO$10OFF-STANDARD"
+      fill_in "Code", with: "BOGO$10-STAN"
+      fill_in "Amount", with: 10
+      fill_in "Disc type", with: "dollar"
+      fill_in "Status", with: "deactivated"
       click_button "Submit"
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons")
-
+      
       within "#deactive-coupons" do
-        expect(page).to have_content("Coupon Name: #{@coupon7.name}")
-        expect(page).to have_content("Coupon Code: #{@coupon7.code}")
+        expect(page).to have_content("Coupon Name: BOGO$10OFF-STANDARD")
+        expect(page).to have_content("Coupon Code: BOGO$10-STAN")
       end
 
       expect(page).to have_content("Deactivated Coupon Successfully Created")
+    end
+
+    it "creates active coupon" do
+      visit "/merchants/#{@merchant2.id}/coupons/new"
+      expect(page).to have_field("Name")
+      expect(page).to have_field("Code")
+      expect(page).to have_field("Amount")
+      expect(page).to have_field("Disc type")
+
+      fill_in "Name", with: "BOGO$10OFF-STANDARD"
+      fill_in "Code", with: "BOGO$10-STAN"
+      fill_in "Amount", with: 10
+      fill_in "Disc type", with: "dollar"
+      fill_in "Status", with: "deactivated"
+      click_button "Submit"
+      expect(current_path).to eq("/merchants/#{@merchant2.id}/coupons")
+
+      within "#active-coupons" do
+        expect(page).to have_content("Coupon Name: BOGO$10OFF-STANDARD")
+        expect(page).to have_content("Coupon Code: BOGO$10-STAN")
+      end
+
+      expect(page).to have_content("Activated Coupon Successfully Created")
     end
   end
 end

@@ -18,7 +18,7 @@ class CouponsController < ApplicationController
     @new_coupon = @merchant.coupons.new(coupon_params)
     @new_coupon.status = "deactivated"
     if @merchant.coupon_limit_5 == true && @new_coupon.save
-      @new_coupon.status = "activated"
+      @new_coupon.update(status: 1)
       redirect_to "/merchants/#{@merchant.id}/coupons"
       flash[:notice] = "Activated Coupon Successfully Created"
     elsif
