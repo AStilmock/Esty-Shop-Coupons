@@ -15,9 +15,10 @@ class Invoice < ApplicationRecord
     self.invoice_items.sum("unit_price * quantity")
   end
 
+
+
   def total_rev_discount
-    require 'pry'; binding.pry
-    if coupon.disc_type == "percent"
+    if coupon.discount_amount < 1 
       total_revenue * (1-coupon.discount_amount)
     else
       total_revenue - coupon.amount
