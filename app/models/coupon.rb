@@ -16,7 +16,7 @@ class Coupon < ApplicationRecord
   end
 
   def discount_amount
-    if disc_type = 1
+    if disc_type == "percent"
       amount / 100
     else
       amount
