@@ -67,5 +67,9 @@ RSpec.describe Coupon, type: :model do
     it "coupon use_count method" do
       expect(@coupon1.use_count).to eq(7)
     end
+
+    it "discount_amount" do
+      expect(@coupon1.discount_amount).to eq(0.1)
+    end
   end
 end
