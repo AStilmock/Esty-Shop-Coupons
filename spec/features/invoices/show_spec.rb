@@ -110,7 +110,7 @@ RSpec.describe "invoices show" do
 
   it "merchant invoice subtotal and total revenues" do
     # 7. Merchant Invoice Show Page: Subtotal and Grand Total Revenues
-    visit merchant_invoice_path(@merchant1, @invoice_1)
+    visit "/merchants/#{@merchant1.id}/invoices/#{@invoice_1.id}"
 
     within "#sub-total-revenue" do
       expect(page).to have_content("Subtotal Invoice Revenue: $#{@invoice_1.total_revenue}")
