@@ -70,8 +70,7 @@ RSpec.describe Coupon, type: :model do
 
     it "discount_amount" do
       expect(@coupon1.discount_amount).to eq(0.1)
+      expect(@coupon7.discount_amount).to eq(10)
     end
-
-    
   end
 end
