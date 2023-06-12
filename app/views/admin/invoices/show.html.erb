@@ -4,6 +4,16 @@
   <div class="row">
     <p class='col-12'>Invoice #<%= @invoice.id %></p>
   </div>
+  
+  <div id="sub-total-revenue">
+    <h5>Subtotal Invoice Revenue: $<%= @invoice.total_revenue %> </h5>
+  </div>
+
+  <div id="total-revenue">
+    <h5>Total Invoice Revenue: $<%= @invoice.total_rev_discount %> </h5>
+    <p> Used Coupon Name: <%= @coupon.name %> </p>
+    <p> Used Coupone Code: <%= @coupon.code %> </p>
+  </div>
 
   <strong>Status: </strong>
     <section id="status-update-<%= @invoice.id %>">
@@ -43,5 +53,6 @@
       <% end %>
     </tbody>
   </table>
+
 
 </body>
