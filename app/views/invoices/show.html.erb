@@ -10,6 +10,16 @@
   </div>
   <br>
 
+  <div id="sub-total-revenue">
+    <h5>Subtotal Invoice Revenue: $<%= @invoice.total_revenue %> </h5>
+  </div>
+
+  <div id="total-revenue">
+    <h5>Total Invoice Revenue: $<%= @invoice.total_rev_discount %> </h5>
+    <p> <%= link_to "#{@coupon.name}",  "/merchants/#{@merchant.id}/coupons/#{@coupon.id}" %> </p>
+    <p> <%= link_to "#{@coupon.code}",  "/merchants/#{@merchant.id}/coupons/#{@coupon.id}" %> </p>
+  </div>
+
   <p> Created on: <%= @invoice.created_at.strftime("%A, %B %-d, %Y") %></p>
   <p>Total Revenue: <%= @invoice.total_revenue %></p>
 

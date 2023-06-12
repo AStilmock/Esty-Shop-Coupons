@@ -12,6 +12,14 @@ class Invoice < ApplicationRecord
   enum status: [:cancelled, :in_progress, :completed]
 
   def total_revenue
-    invoice_items.sum("unit_price * quantity")
+    self.invoice_items.sum("unit_price * quantity")
+  end
+
+  def total_rev_discount
+    if coupon.disc_type == "percent"
+      total_revenue * (1-coupon.discount_amount)
+    else
+      total_revenue - coupon.amount
+    end
   end
 end

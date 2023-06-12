@@ -14,4 +14,12 @@ class Coupon < ApplicationRecord
     invoices.joins(:transactions)
     .where(transactions: { result: 1 }).count
   end
+
+  def discount_amount
+    if disc_type == "percent"
+      amount / 100
+    else
+      amount
+    end
+  end
 end
