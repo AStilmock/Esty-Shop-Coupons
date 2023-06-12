@@ -117,5 +117,16 @@ RSpec.describe "Coupon Dashboard" do
         expect(page).to_not have_content(@coupon5.name)
       end
     end
+
+    it "Holidays API" do
+      # 9: Holidays API
+      visit "/merchants/#{@merchant1.id}/coupons"
+
+      within "#upcoming-holidays" do
+        expect(page).to have_content("Holiday: Juneteenth-2023-06-19")
+        expect(page).to have_content("Holiday: Independence Day-2023-07-04")
+        expect(page).to have_content("Holiday: Labour Day-2023-09-04")
+      end
+    end
   end
 end
