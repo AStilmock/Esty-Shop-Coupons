@@ -16,3 +16,10 @@
     <p>Coupon Code: <%= coupon.code %></p>
   <% end %>
 </div>
+
+<div id="upcoming-holidays">
+  <h3>Upcoming Holidays</h3>
+  <p><% @holidays.each do |holiday| %>
+    <p>Holiday: <%= holiday[:name] %>-<%= holiday[:date] %></p>
+  <% end %>
+</div>
