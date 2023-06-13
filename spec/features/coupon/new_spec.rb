@@ -90,17 +90,17 @@ RSpec.describe "Coupon New" do
       expect(page).to have_field("Amount")
       expect(page).to have_field("Disc type")
 
-      fill_in "Name", with: "BOGO$10OFF-STANDARD"
-      fill_in "Code", with: "BOGO$10-STAN"
-      fill_in "Amount", with: 10
+      fill_in "Name", with: "BOGO$50OFF-CLEARANCE"
+      fill_in "Code", with: "BOGO$50-CLEAR"
+      fill_in "Amount", with: 50
       fill_in "Disc type", with: "dollar"
       fill_in "Status", with: "deactivated"
       click_button "Submit"
       expect(current_path).to eq("/merchants/#{@merchant2.id}/coupons")
 
       within "#active-coupons" do
-        expect(page).to have_content("Coupon Name: BOGO$10OFF-STANDARD")
-        expect(page).to have_content("Coupon Code: BOGO$10-STAN")
+        expect(page).to have_content("Coupon Name: BOGO$50OFF-CLEARANCE")
+        expect(page).to have_content("Coupon Code: BOGO$50-CLEAR")
       end
 
       expect(page).to have_content("Activated Coupon Successfully Created")

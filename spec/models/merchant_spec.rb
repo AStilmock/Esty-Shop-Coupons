@@ -95,6 +95,14 @@ describe Merchant do
       @merchant1 = Merchant.create!(name: 'Hair Care')
       @merchant2 = Merchant.create!(name: 'Jewelry')
 
+      @coupon1 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+      @coupon2 = Coupon.create!(name: "10% OFF Discount HOLIDAY", status: 1, code: "10-OFF-HOLIDAY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+      @coupon3 = Coupon.create!(name: "10% OFF Discount LOYALTY", status: 1, code: "10-OFF-LOYALTY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+      @coupon4 = Coupon.create!(name: "10% OFF Discount WEEKEND", status: 1, code: "10-OFF-WEEKEND", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+      @coupon5 = Coupon.create!(name: "10% OFF Discount FRIENDS", status: 1, code: "10-OFF-FRIENDS", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+      @coupon6 = Coupon.create!(name: "10% OFF Discount FAMILY", status: 0, code: "10-OFF-FAMILY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
+      @coupon7 = Coupon.create!(name: "BOGO $10 OFF", status: 0, code: "BOGO$10", amount: 10.0, disc_type: 0, merchant_id: @merchant1.id)
+
       @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
       @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
       @item_3 = Item.create!(name: "Brush", description: "This takes out tangles", unit_price: 5, merchant_id: @merchant1.id)
@@ -139,14 +147,6 @@ describe Merchant do
       @transaction6 = Transaction.create!(credit_card_number: 879799, result: 0, invoice_id: @invoice_6.id)
       @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_7.id)
       @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_8.id)
-
-      @coupon1 = Coupon.create!(name: "10% OFF Discount", status: 1, code: "10-OFF", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-      @coupon2 = Coupon.create!(name: "10% OFF Discount HOLIDAY", status: 1, code: "10-OFF-HOLIDAY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-      @coupon3 = Coupon.create!(name: "10% OFF Discount LOYALTY", status: 1, code: "10-OFF-LOYALTY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-      @coupon4 = Coupon.create!(name: "10% OFF Discount WEEKEND", status: 1, code: "10-OFF-WEEKEND", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-      @coupon5 = Coupon.create!(name: "10% OFF Discount FRIENDS", status: 1, code: "10-OFF-FRIENDS", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-      @coupon6 = Coupon.create!(name: "10% OFF Discount FAMILY", status: 0, code: "10-OFF-FAMILY", amount: 0.1, disc_type: 1, merchant_id: @merchant1.id)
-      @coupon7 = Coupon.create!(name: "BOGO $10 OFF", status: 0, code: "BOGO$10", amount: 10.0, disc_type: 0, merchant_id: @merchant1.id)
     end
 
     it "can list items ready to ship" do
@@ -188,6 +188,14 @@ describe Merchant do
 
     it "deactivated_coupons" do
       expect(@merchant1.deactivated_coupons).to eq([@coupon6, @coupon7])
+    end
+
+    it "code_exists?" do
+      expect(@merchant2.code_exists?(@coupon1.code)).to eq(false)
+    end
+
+    it "valid_coupons" do
+      expect(@merchant2.valid_coupons(@coupon1.code)).to eq(true)
     end
   end
 end

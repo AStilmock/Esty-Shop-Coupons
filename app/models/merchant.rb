@@ -74,4 +74,12 @@ class Merchant < ApplicationRecord
   def deactivated_coupons
     self.coupons.where(status: "deactivated")
   end
+
+  def code_exists?(coupon_code)
+    coupons.exists?(code: coupon_code)
+  end
+
+  def valid_coupons(coupon_code)
+    coupon_limit_5 == true && code_exists?(coupon_code) == false
+  end
 end
