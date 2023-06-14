@@ -67,17 +67,26 @@ RSpec.describe "Coupon New" do
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/new")
       expect(page).to have_content("ERROR - VALID DATA MUST BE ENTERED FOR COUPON CREATION")
 
-      fill_in "Name", with: "BOGO$10OFF-STANDARD"
-      fill_in "Code", with: "BOGO$10-STAN"
+      fill_in "Name", with: "10% OFF Discount-STANDARD"
+      fill_in "Code", with: "10-OFF-STAN"
       fill_in "Amount", with: 10
+      fill_in "Disc type", with: "percent"
+      fill_in "Status", with: "activated"
+      click_button "Submit"
+      expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons/new")
+      expect(page).to have_content("ERROR - VALID DATA MUST BE ENTERED FOR COUPON CREATION")
+
+      fill_in "Name", with: "New Coupon"
+      fill_in "Code", with: "$100"
+      fill_in "Amount", with: 100
       fill_in "Disc type", with: "dollar"
       fill_in "Status", with: "deactivated"
       click_button "Submit"
       expect(current_path).to eq("/merchants/#{@merchant1.id}/coupons")
       
       within "#deactive-coupons" do
-        expect(page).to have_content("Coupon Name: BOGO$10OFF-STANDARD")
-        expect(page).to have_content("Coupon Code: BOGO$10-STAN")
+        expect(page).to have_content("Coupon Name: New Coupon")
+        expect(page).to have_content("Coupon Code: $100")
       end
 
       expect(page).to have_content("Deactivated Coupon Successfully Created")
