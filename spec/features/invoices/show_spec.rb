@@ -118,8 +118,10 @@ RSpec.describe "invoices show" do
     end
 
     within "#total-revenue" do
-      expect(page).to have_content("Total Invoice Revenue: $#{@invoice_1.total_rev_discount}")
+      expect(page).to have_content("Total Invoice Revenue With Coupon: $#{@invoice_1.total_rev_discount}")
       expect(@invoice_1.total_rev_discount).to equal(145.8)
+      expect(page).to have_content("Coupon Name: #{@coupon1.name}")
+      expect(page).to have_content("Coupon Code: #{@coupon1.code}")
       expect(page).to have_link "#{@coupon1.name}"
       expect(page).to have_link "#{@coupon1.code}"
       click_link "#{@coupon1.code}"

@@ -1,5 +1,9 @@
 <%= render partial: "shared/nav" %>
 
+<div id="coupons">
+  <h3> <%= link_to "View All Coupons",  "/merchants/#{@merchant.id}/coupons" %> </h3>
+</div>
+
 <div class="row">
   <div class="col-sm-6 column-header">
     <p class='mr-auto'>Favorite Customers</p>
@@ -30,8 +34,4 @@
       </p>
     </section>
   </ul>
-</div>
-
-<div id="coupons">
-  <h3> <%= link_to "View All Coupons",  "/merchants/#{@merchant.id}/coupons" %> </h3>
 </div>
