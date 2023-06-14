@@ -18,11 +18,16 @@ class CouponsController < ApplicationController
     @merchant = Merchant.find(params[:merchant_id])
     @new_coupon = @merchant.coupons.new(coupon_params)
     @new_coupon.status = "deactivated"
+    # require 'pry'; binding.pry
     if @merchant.valid_coupons(@new_coupon.code) && @new_coupon.save
       @new_coupon.update(status: 1)
       redirect_to "/merchants/#{@merchant.id}/coupons"
       flash[:notice] = "Activated Coupon Successfully Created"
     elsif
+      @merchant.code_exists?(@new_coupon.code) == true
+      redirect_to "/merchants/#{@merchant.id}/coupons/new"
+      flash[:alert] = "ERROR - VALID DATA MUST BE ENTERED FOR COUPON CREATION"
+    elsif 
       @new_coupon.save
       @new_coupon.status = "deactivated"
       redirect_to "/merchants/#{@merchant.id}/coupons"
